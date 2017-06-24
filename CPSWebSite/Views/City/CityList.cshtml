@@ -1,0 +1,47 @@
+﻿<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script lang="ja" type="text/javascript">
+    function getCitybyName() {
+        var textVal = document.getElementById("cityName").value;
+        if (textVal == '' || textVal == null) {
+            alert('Search Value can not be blank!');
+            return false;
+        }
+        document.getElementById("cityList").innerHTML = '';
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:5418/api/City/GetCityByName?name=" + textVal, //URI  
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                if (data != 0) {
+                    var datavalue = data;
+                    var myJsonObject = datavalue;
+                    contentType: "application/json";
+                    $("#cityList").append('<tr><td>S.No.</td><td>City</td><td>State</td><td>Zip</td><td>Population</td></tr>');
+                    $.each(myJsonObject, function (i, mobj) {
+                        $("#cityList").append('<tr style="border: 1px solid #ff0000;" ><td>' + (i + 1) + '.</td><td>' +
+                            '<a href="/City/UpdateCityList?id=' + mobj._id + '"</a>' + mobj.city +
+                        '</td><td>' + mobj.state +
+                       '</td><td>' + mobj._id +
+                       '</td>' + '</td><td>'
+                       + mobj.pop + '</td></tr>');
+                    });
+                } else {
+                    $("#cityList").append('<tr><td width="100%"> Sorry! No data found. Please try with correct name.</td></tr>');
+                }
+            },
+            error: function (xhr) {
+                alert(xhr.responseText);
+            }
+        });
+
+    }  </script>
+<div style="text-align: center;">
+    <div style="font-size: xx-large; font-weight: bold">US City Population Data</div>
+    <br />
+    <br />
+    <span style="font-size: larger; font-weight: bold">City&nbsp;:&nbsp;</span>
+    <input type="text" name="cityName" id="cityName" value="" style="height: 20px;"  maxlength="15" />
+    <input type="button" name="getCity" value="Search" onclick="javascript: return getCitybyName()" />
+</div>
+<table id="cityList" border="1" align="center" style="border: 1px solid black"></table>

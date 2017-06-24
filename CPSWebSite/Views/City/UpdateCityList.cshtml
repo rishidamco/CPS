@@ -1,0 +1,64 @@
+﻿@model List<CPSWebSite.Models.cityListModel>
+
+<script type="text/javascript">
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+    function savePop() {
+        var popVal = document.getElementById("pop").value;
+        if (popVal == '' || popVal == null)
+            popVal = '0';
+
+        var cityDetail =
+       {
+           city: "@Model[0].city",
+           loc: "@Model[0].loc",
+           pop: popVal,
+           state: "@Model[0].state",
+           _id: "@Model[0]._id"
+       };
+        $.ajax({
+            url: "http://localhost:5418/api/City/updateCityPopulation",
+            type: "POST",
+            data: JSON.stringify(cityDetail),
+            dataType: "json",
+            contentType: "application/json",
+            crossDomain: true,
+            cache: false,
+            success: function (data) {
+                alert("City Details Updated Successfully.")
+            }
+        });
+    }
+</script>
+<div>
+    <table border="1">
+        <tr>
+            <td align="center" style="font-size: larger; font-weight: bold;" colspan="2">@Model[0].city</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">State</td>
+            <td>@Model[0].state</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Population</td>
+            <td>
+                <input type="text" name="pop" id="pop" value="@Model[0].pop" style="width:150px" onkeypress="return isNumberKey(event)"
+                        maxlength="8"/></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Zip</td>
+            <td>@Model[0]._id
+                <input type="hidden" name="zipCode" id="zipCode" value="@Model[0]._id" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="button" name="Save" value="Save" onclick="javascript: return savePop()" style="width: 80px" />&nbsp;&nbsp;
+                <input type="button" name="Back" value="Back" onclick="javascript: window.history.back();" style="width: 80px" /></td>
+        </tr>
+    </table>
+</div>
